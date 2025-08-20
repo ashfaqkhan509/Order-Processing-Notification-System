@@ -77,13 +77,17 @@ def test_orders_stream_sse(mock_redis, client):
                     (
                         b'1-0',
                         {
-                            b'update': b'{"order_id":1,"status":"PROCESSING","event":"status_update"}'
+                            b'update': (
+                                b'{"order_id":1,"status":"PROCESSING","event":"status_update"}'
+                            )
                         }
                     ),
                     (
                         b'2-0',
                         {
-                            b'update': b'{"order_id":1,"status":"COMPLETED","event":"status_update"}'
+                            b'update': (
+                                b'{"order_id":1,"status":"COMPLETED","event":"status_update"}'
+                            )
                         }
                     )
                 ]
@@ -113,13 +117,17 @@ def test_orders_stream_failure(mock_redis, client):
                     (
                         b'3-0',
                         {
-                            b'update': b'{"order_id":2,"status":"CANCELLED","event":"status_update"}'
+                            b'update': (
+                                b'{"order_id":2,"status":"CANCELLED","event":"status_update"}'
+                            )
                         }
                     ),
                     (
                         b'4-0',
                         {
-                            b'update': b'{"order_id":3,"status":"FAILED","event":"status_update"}'
+                            b'update': (
+                                b'{"order_id":3,"status":"FAILED","event":"status_update"}'
+                            )
                         }
                     )
                 ]
