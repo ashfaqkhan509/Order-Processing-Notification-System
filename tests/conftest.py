@@ -39,4 +39,3 @@ def client(app):
         FlaskClient: A test client instance for sending requests.
     """
     return app.test_client()
-

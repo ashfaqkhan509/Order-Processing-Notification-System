@@ -12,8 +12,8 @@ def make_shell_context():
     """
     Provides shell context for Flask CLI.
 
-    This allows direct access to the database instance (db) and 
-    model classes (Customer, Order, Product, OrderItem) 
+    This allows direct access to the database instance (db) and
+    model classes (Customer, Order, Product, OrderItem)
     when running `flask shell`.
 
     Returns:

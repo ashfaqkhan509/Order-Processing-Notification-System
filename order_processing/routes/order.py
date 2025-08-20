@@ -11,10 +11,10 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 @bp.route('/customers', methods=['POST'])
 def create_customer():
     """Create a new customer.
-    
+
     Expects:
         JSON body with 'username', 'email', and 'address'.
-    
+
     Returns:
         201 Created with the new customer JSON.
         400 if request body is missing.
@@ -40,7 +40,7 @@ def create_customer():
 @bp.route('/customers', methods=['GET'])
 def get_customers():
     """Retrieve all customers.
-    
+
     Returns:
         200 with a list of customers as JSON.
         500 if a database error occurs.
@@ -55,10 +55,10 @@ def get_customers():
 @bp.route('/customers/<int:customer_id>', methods=['GET'])
 def get_customer(customer_id):
     """Retrieve a specific customer by ID.
-    
+
     Args:
         customer_id (int): The ID of the customer.
-    
+
     Returns:
         200 with the customer JSON if found.
         404 if the customer does not exist.
@@ -74,10 +74,10 @@ def get_customer(customer_id):
 @bp.route('/products', methods=['POST'])
 def create_product():
     """Create a new product.
-    
+
     Expects:
         JSON body with 'name', 'price', optional 'description' and 'stock'.
-    
+
     Returns:
         201 Created with the new product JSON.
         400 if request body is missing.
@@ -104,7 +104,7 @@ def create_product():
 @bp.route('/products', methods=['GET'])
 def get_products():
     """Retrieve all products.
-    
+
     Returns:
         200 with a list of products as JSON.
         500 if a database error occurs.
@@ -119,10 +119,10 @@ def get_products():
 @bp.route('/products/<int:product_id>', methods=['GET'])
 def get_product(product_id):
     """Retrieve a specific product by ID.
-    
+
     Args:
         product_id (int): The ID of the product.
-    
+
     Returns:
         200 with the product JSON if found.
         404 if the product does not exist.
@@ -138,18 +138,18 @@ def get_product(product_id):
 @bp.route('/orders', methods=['POST'])
 def create_order():
     """Create a new order.
-    
+
     Expects:
         JSON body with:
             - 'customer_id' (int)
             - 'items' (list of {product_id, quantity})
-    
+
     Process:
         - Validates stock for each product.
         - Deducts stock.
         - Creates Order and OrderItems.
         - Pushes the order to Redis for async processing.
-    
+
     Returns:
         201 Created with order JSON.
         400 if stock is insufficient or body is missing.
@@ -201,7 +201,7 @@ def create_order():
 @bp.route('/orders', methods=['GET'])
 def get_orders():
     """Retrieve all orders.
-    
+
     Returns:
         200 with a list of orders as JSON.
         500 if a database error occurs.
@@ -216,10 +216,10 @@ def get_orders():
 @bp.route('/orders/<int:order_id>', methods=['GET'])
 def get_order(order_id):
     """Retrieve a specific order by ID.
-    
+
     Args:
         order_id (int): The ID of the order.
-    
+
     Returns:
         200 with the order JSON if found.
         404 if the order does not exist.
@@ -235,12 +235,12 @@ def get_order(order_id):
 @bp.route("/orders/stream")
 def stream_sse():
     """Stream live order updates via Server-Sent Events (SSE).
-    
+
     Process:
         - Reads messages from Redis stream (`order_updates_stream`).
         - Yields updates in SSE format: "data: <json>\n\n".
         - Stops gracefully if no updates (important for tests).
-    
+
     Returns:
         A streaming HTTP response with MIME type "text/event-stream".
     """

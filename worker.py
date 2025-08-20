@@ -2,7 +2,7 @@
 Worker service for processing incoming orders using Redis Streams.
 
 This script continuously listens to the Redis `orders_stream` via a consumer group,
-simulates order processing, updates the database with new statuses, and pushes 
+simulates order processing, updates the database with new statuses, and pushes
 status updates (e.g., PROCESSING, COMPLETED, FAILED) back to the Redis stream.
 
 Key Features:
