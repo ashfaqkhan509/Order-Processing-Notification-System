@@ -3,12 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from order_processing.models import Order, Customer, Product, OrderItem
 from order_processing import db
 from order_processing.services.redis_stream import RedisStreamService
-import json
 from flask import Response
-import time
-from flask import current_app
-from order_processing import create_app
-import random
 
 
 bp = Blueprint('api', __name__, url_prefix='/api')
@@ -176,4 +171,3 @@ def stream_sse():
                         yield f"data: {message_data[b'update'].decode()}\n\n"
 
     return Response(event_stream(), mimetype="text/event-stream")
-

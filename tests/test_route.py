@@ -3,7 +3,6 @@ from order_processing import db
 from order_processing.models import Customer, Product
 
 
-
 def test_create_customer(client):
     """Test creating a new customer."""
     data = {"username": "Alice", "email": "alice@example.com", "address": "123 Street"}
@@ -75,8 +74,18 @@ def test_orders_stream_sse(mock_redis, client):
             (
                 b'order_updates_stream',
                 [
-                    (b'1-0', {b'update': b'{"order_id":1,"status":"PROCESSING","event":"status_update"}'}),
-                    (b'2-0', {b'update': b'{"order_id":1,"status":"COMPLETED","event":"status_update"}'})
+                    (
+                        b'1-0',
+                        {
+                            b'update': b'{"order_id":1,"status":"PROCESSING","event":"status_update"}'
+                        }
+                    ),
+                    (
+                        b'2-0',
+                        {
+                            b'update': b'{"order_id":1,"status":"COMPLETED","event":"status_update"}'
+                        }
+                    )
                 ]
             )
         ],
@@ -98,11 +107,19 @@ def test_orders_stream_failure(mock_redis, client):
 
     mock_instance.redis.xread.side_effect = [
     [
-        (b'order_updates_stream',
-         [
-             (b'3-0', {b'update': b'{"order_id":2,"status":"CANCELLED","event":"status_update"}'}),
-             (b'4-0', {b'update': b'{"order_id":3,"status":"FAILED","event":"status_update"}'})
-         ])
+        (
+            b'order_updates_stream',
+            [
+                (
+                    b'3-0',
+                    {b'update': b'{"order_id":2,"status":"CANCELLED","event":"status_update"}'}
+                ),
+                (
+                    b'4-0',
+                    {b'update': b'{"order_id":3,"status":"FAILED","event":"status_update"}'}
+                )
+            ]
+        )
     ],
     []
     ]

@@ -35,10 +35,6 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
 
-    # defaults:
-    #   run:
-    #     working-directory: task_manager
-
     services:
       postgres:
         image: postgres:15
@@ -83,10 +79,6 @@ jobs:
             sleep 2
           done
 
-      # - name: Run Django Migrations
-      #   run: |
-      #     python manage.py migrate
-
       - name: Run Tests
         run: |
-          python manage.py test
+          pytest
