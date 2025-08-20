@@ -6,6 +6,7 @@ from order_processing import db
 
 
 class OrderStatus(Enum):
+    """Enumeration of possible statuses for an order."""
     PENDING = "Pending"
     PROCESSING = "Processing"
     COMPLETED = "Completed"
@@ -14,6 +15,7 @@ class OrderStatus(Enum):
 
 
 class Customer(db.Model):
+    """Database model for storing customer information."""
     __tablename__ = 'customers'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -25,6 +27,7 @@ class Customer(db.Model):
     orders: Mapped[list['Order']] = relationship('Order', back_populates='customer')
 
     def to_dict(self):
+        """Return a dictionary representation of the customer."""
         return {
             "id": self.id,
             "username": self.username,
@@ -35,6 +38,7 @@ class Customer(db.Model):
 
 
 class Product(db.Model):
+    """Database model for storing product details."""
     __tablename__ = 'products'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -52,6 +56,7 @@ class Product(db.Model):
     order_items: Mapped[list['OrderItem']] = relationship('OrderItem', back_populates='product')
 
     def to_dict(self):
+        """Return a dictionary representation of the product."""
         return {
             "id": self.id,
             "name": self.name,
@@ -64,6 +69,7 @@ class Product(db.Model):
 
 
 class Order(db.Model):
+    """Database model for storing order information."""
     __tablename__ = 'orders'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -85,6 +91,7 @@ class Order(db.Model):
     )
 
     def to_dict(self):
+        """Return a dictionary representation of the order, including customer and items."""
         return {
             "id": self.id,
             "customer": self.customer.to_dict() if self.customer else None,
@@ -97,6 +104,7 @@ class Order(db.Model):
 
 
 class OrderItem(db.Model):
+    """Database model for storing individual items within an order."""
     __tablename__ = 'order_items'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -110,6 +118,7 @@ class OrderItem(db.Model):
     product: Mapped['Product'] = relationship('Product', back_populates='order_items')
 
     def to_dict(self):
+        """Return a dictionary representation of the order item, including product details."""
         return {
             "id": self.id,
             "product": self.product.to_dict() if self.product else None,

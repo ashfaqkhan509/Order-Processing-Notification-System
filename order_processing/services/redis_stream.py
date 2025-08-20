@@ -4,7 +4,27 @@ from flask import current_app
 
 
 class RedisStreamService:
+    """
+    A service class to interact with Redis Streams for order processing.
+
+    This class handles:
+        - Pushing new orders into the main `orders_stream`.
+        - Publishing order status updates into `order_updates_stream`.
+        - Re-queuing failed orders into a retry stream.
+        - Ensuring Redis consumer groups exist for stream processing.
+
+    Attributes:
+        url (str): Redis connection URL.
+        redis (Redis): Redis client instance.
+        orders_stream (str): Name of the stream for incoming orders.
+        order_updates_stream (str): Name of the stream for order status updates.
+        retry_stream (str): Name of the stream for failed orders.
+        consumer_group (str): Consumer group name for processing orders.
+        worker_name (str): Worker identifier for consumer group.
+    """
+
     def __init__(self):
+        """Initialize Redis connection and stream configurations from Flask app config."""
         self.url = current_app.config.get(
             'REDIS_STREAM_URL',
             'redis://localhost:6379/0'
@@ -32,6 +52,13 @@ class RedisStreamService:
         )
 
     def ensure_consumer_group(self):
+        """
+        Ensure that the Redis consumer group for orders exists.
+
+        If the consumer group already exists, ignore the error.
+        Raises:
+            redis.exceptions.ResponseError: If another Redis error occurs.
+        """
         try:
             self.redis.xgroup_create(
                 self.orders_stream,
@@ -44,12 +71,30 @@ class RedisStreamService:
                 raise
 
     def add_order(self, order_data):
-        """Push a new order to the main orders stream"""
+        """
+        Push a new order into the orders stream.
+
+        Args:
+            order_data (dict): Order details (customer, items, etc.).
+
+        Returns:
+            str: Redis stream entry ID.
+        """
         order_json = json.dumps(order_data)
         return self.redis.xadd(self.orders_stream, {'order': order_json})
 
     def push_status_update(self, order_id, status, note=None):
-        """Push an order status update to the order_updates stream"""
+        """
+        Push an order status update into the order_updates stream.
+
+        Args:
+            order_id (int): ID of the order being updated.
+            status (str): New status (e.g., "PROCESSING", "COMPLETED").
+            note (str, optional): Extra information about the update.
+
+        Returns:
+            str: Redis stream entry ID.
+        """
         update_data = {
             'order_id': order_id,
             'status': status,
@@ -61,8 +106,14 @@ class RedisStreamService:
 
     def requeue_failed_order(self, order_id, reason="processing_failed"):
         """
-        Requeue a failed order into retry stream so it can be processed later.
-        Include reason for debugging/monitoring.
+        Requeue a failed order into the retry stream.
+
+        Args:
+            order_id (int): ID of the failed order.
+            reason (str, optional): Reason for requeueing (default: "processing_failed").
+
+        Returns:
+            str: Redis stream entry ID.
         """
         failed_data = {
             'order_id': order_id,
