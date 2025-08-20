@@ -1,5 +1,4 @@
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Integer, String, DateTime, Text, ForeignKey, Float, Enum as SQLEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from enum import Enum
@@ -16,7 +15,7 @@ class OrderStatus(Enum):
 
 class Customer(db.Model):
     __tablename__ = 'customers'
-    
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)

@@ -106,22 +106,26 @@ def test_orders_stream_failure(mock_redis, client):
     mock_redis.return_value = mock_instance
 
     mock_instance.redis.xread.side_effect = [
-    [
-        (
-            b'order_updates_stream',
-            [
-                (
-                    b'3-0',
-                    {b'update': b'{"order_id":2,"status":"CANCELLED","event":"status_update"}'}
-                ),
-                (
-                    b'4-0',
-                    {b'update': b'{"order_id":3,"status":"FAILED","event":"status_update"}'}
-                )
-            ]
-        )
-    ],
-    []
+        [
+            (
+                b'order_updates_stream',
+                [
+                    (
+                        b'3-0',
+                        {
+                            b'update': b'{"order_id":2,"status":"CANCELLED","event":"status_update"}'
+                        }
+                    ),
+                    (
+                        b'4-0',
+                        {
+                            b'update': b'{"order_id":3,"status":"FAILED","event":"status_update"}'
+                        }
+                    )
+                ]
+            )
+        ],
+        []
     ]
 
     response = client.get("/api/orders/stream", buffered=True)
