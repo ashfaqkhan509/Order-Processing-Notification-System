@@ -1,4 +1,4 @@
-name: Django CI
+name: Order Processing flake8 and unit test
 
 on:
   pull_request:
